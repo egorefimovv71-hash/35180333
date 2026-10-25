@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>White Duck — магазин</title>
+<style>
+  :root {
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --card-bg: #ffffff;
+    --primary: #2563eb;
+    --primary-800: #dbeafe;
+    --primary-shadow: #1e3a8a;
+    --light: #0f172a;
+    --zinc-800: #eff6ff;
+
+    --loader-bg: #0e1322;
+    --loader-track: rgba(255, 255, 255, 0.07);
+    --loader-accent: #5eead4;
+    --loader-text: #e6edf7;
+
+    --p-surface: #ffffff;
+    --p-text: #0f172a;
+    --p-muted: #64748b;
+    --p-line: #dbeafe;
+    --p-accent: #2563eb;
+    --p-accent-2: #38bdf8;
+    --p-ok: #16a34a;
+    --p-radius: 18px;
+
+    --f-surface: #ffffff;
+    --f-surface-2: #eaf3fc;
+    --f-border: #d5e4f5;
+    --f-text: #0f2a4a;
+    --f-muted: #6b84a3;
+    --f-blue: #1d6fe0;
+    --f-navy: #0b3d91;
+    --f-sky: #5fb8f5;
+    --f-radius: 14px;
+
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    color: var(--light);
+    background-color: #eff6ff;
+    background-image:
+      linear-gradient(0deg, transparent 24%, #bfdbfe 25%, #bfdbfe 26%, transparent 27%, transparent 74%, #bfdbfe 75%, #bfdbfe 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, #bfdbfe 25%, #bfdbfe 26%, transparent 27%, transparent 74%, #bfdbfe 75%, #bfdbfe 76%, transparent 77%, transparent);
+    background-size: 55px 55px;
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ===== СТРАНИЦЫ ===== */
+  .page {
+    min-height: 100vh;
+    padding-bottom: calc(96px + var(--safe-bottom));
+    display: none;
+  }
+  .page.active { display: block; }
+
+  /* ===== ГЛАВНАЯ ===== */
+  .cover {
+    background: linear-gradient(160deg, #2563eb 0%, #1e3a8a 100%);
+    padding: 28px 20px 24px;
+    text-align: center;
+    border-radius: 0 0 22px 22px;
+    box-shadow: 0 6px 18px rgba(30,58,138,0.28);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(147,197,253,0.4), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .cover-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .cover-sub {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .cover-sub .line {
+    height: 1px; width: 40px;
+    background: linear-gradient(90deg, transparent, #93c5fd);
+  }
+  .cover-sub .line:last-child {
+    background: linear-gradient(90deg, #93c5fd, transparent);
+  }
+  .cover-sub .text {
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: #bfdbfe;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ad-banner {
+    margin: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+    border: 2px dashed #93c5fd;
+    border-radius: 16px;
+    padding: 20px 18px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.08);
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ad-banner::before {
+    content: "";
+    position: absolute;
+    top: -30px; left: -30px;
+    width: 90px; height: 90px;
+    background: radial-gradient(circle, rgba(147,197,253,0.35), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .ad-label {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #3b82f6;
+    background: #dbeafe;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .ad-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1e3a8a;
+    margin-bottom: 4px;
+  }
+  .ad-text {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 0 16px 16px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.9rem;
+    width: 100%;
+    background-color: var(--card-bg);
+    border-radius: 1rem;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.1);
+    border: 1px solid #dbeafe;
+  }
+  .image_container {
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    height: 7rem;
+    background-color: var(--primary-800);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image_container .image {
+    width: 3rem;
+    fill: var(--primary);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+  }
+  .title {
+    overflow: clip;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--light);
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+  .info-btn {
+    flex-shrink: 0;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: #fff;
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    font-family: Georgia, serif;
+    font-style: italic;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .info-btn:hover { background: var(--primary); color: #fff; }
+  .size {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  .list-size {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .list-size .item-list { list-style: none; }
+  .list-size .item-list-button {
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    background-color: var(--zinc-800);
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 600;
+    border: 2px solid var(--zinc-800);
+    border-radius: 0.3rem;
+    transition: all 0.3s ease-in-out;
+  }
+  .item-list-button:hover { border: 2px solid var(--primary); }
+  .item-list-button.selected {
+    background-color: var(--primary);
+    color: #fff;
+    border: 2px solid var(--primary-shadow);
+    box-shadow: inset 0px 1px 4px var(--primary-shadow);
+  }
+  .action {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+  .price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-shadow);
+  }
+  .ripple-btn {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0.7em 0;
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--primary);
+    border: none;
+    border-radius: 0.5em;
+    font-family: inherit;
+    transition: transform 0.15s ease;
+  }
+  .ripple-btn .gradient {
+    position: absolute;
+    width: 100%; height: 100%;
+    left: 0; top: 0;
+    border-radius: 0.5em;
+    margin-top: -0.25em;
+    background-image: linear-gradient(
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.25)
+    );
+    pointer-events: none;
+  }
+  .ripple-btn .label {
+    position: relative;
+    top: -1px;
+    z-index: 2;
+  }
+  .ripple-btn .transition {
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 500ms;
+    background-color: rgba(96, 165, 250, 0.75);
+    border-radius: 9999px;
+    width: 0; height: 0;
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .ripple-btn:hover .transition { width: 14em; height: 14em; }
+  .ripple-btn:active { transform: scale(0.97); }
+
+  /* ===== ПРОФИЛЬ ===== */
+  .profile-wrap {
+    padding: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .p-banner {
+    position: relative;
+    height: 180px;
+    border-radius: var(--p-radius);
+    overflow: hidden;
+    background: #2b2a4c;
+  }
+  .p-banner svg { width: 100%; height: 100%; display: block; }
+  .banner-tag {
+    position: absolute;
+    right: 14px; bottom: 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.25);
+    padding: 4px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+  }
+  .profile-card {
+    background: var(--p-surface);
+    border: 1px solid var(--p-line);
+    border-top: none;
+    border-radius: 0 0 var(--p-radius) var(--p-radius);
+    padding: 20px;
+  }
+  .header-profile {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .avatar-wrap {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+  }
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 4px;
+    background:
+      conic-gradient(var(--p-accent) calc(var(--p, 0) * 1%), var(--p-line) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  }
+  .avatar {
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 4px solid var(--p-surface);
+    background: linear-gradient(135deg, var(--p-accent), var(--p-accent-2));
+    display: grid;
+    place-items: center;
+    font-size: 34px;
+    font-weight: 700;
+    color: #fff;
+    overflow: hidden;
+  }
+  .lvl-badge {
+    position: absolute;
+    right: -4px; bottom: -2px;
+    min-width: 30px; height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--p-accent), var(--p-accent-2));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--p-surface);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    font-variant-numeric: tabular-nums;
+  }
+  .identity { min-width: 0; padding-bottom: 6px; flex: 1; position: relative; z-index: 2; }
+  .identity h1 {
+    display: block;
+    color: var(--p-text);
+    margin: 0 0 2px;
+    font-size: 22px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .identity p {
+    margin: 2px 0 10px;
+    color: var(--p-muted);
+    font-size: 14px;
+  }
+  .xp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--p-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .xp-row .lvl-text {
+    font-weight: 700;
+    color: var(--p-text);
+    white-space: nowrap;
+  }
+  .bar {
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--p-line);
+    overflow: hidden;
+    min-width: 60px;
+  }
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--p-accent), var(--p-accent-2));
+    transition: width 0.8s ease;
+  }
+  .section-title {
+    margin: 24px 4px 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--p-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title small { font-size: 13px; font-weight: 500; color: var(--p-muted); }
+  .orders { display: flex; flex-direction: column; gap: 10px; }
+  .order {
+    background: var(--p-surface);
+    border: 1px solid var(--p-line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    align-items: center;
+  }
+  .order-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--p-text);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .order-meta { font-size: 13px; color: var(--p-muted); }
+  .order-price { font-weight: 700; color: var(--p-text); font-variant-numeric: tabular-nums; text-align: right; }
+  .status {
+    justify-self: end;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(22,163,74,0.14);
+    color: var(--p-ok);
+  }
+  .status.pending { background: rgba(37,99,235,0.14); color: var(--p-accent); }
+  .empty {
+    text-align: center;
+    color: var(--p-muted);
+    padding: 28px;
+    border: 1px dashed var(--p-line);
+    border-radius: 14px;
+  }
+
+  /* ===== ФОРУМ ===== */
+  .forum-wrap {
+    padding: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+    color: var(--f-text);
+  }
+  .forum-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .forum-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    background: linear-gradient(90deg, var(--f-navy), var(--f-sky));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    cursor: pointer;
+  }
+  .forum-tag {
+    font-size: .75rem;
+    color: var(--f-blue);
+    background: var(--f-surface-2);
+    padding: .3rem .8rem;
+    border-radius: 999px;
+  }
+  .f-card {
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    padding: 1rem 1.1rem;
+    margin-bottom: .8rem;
+    box-shadow: 0 6px 20px -12px rgba(11,61,145,.25);
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .f-card.clickable { cursor: pointer; }
+  .f-card.clickable:hover {
+    transform: translateY(-2px);
+    border-color: var(--f-sky);
+    box-shadow: 0 12px 26px -12px rgba(29,111,224,.35);
+  }
+  .f-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--f-navy);
+  }
+  .f-body {
+    color: #37527a;
+    margin: .5rem 0 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: .88rem;
+  }
+  .f-meta {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--f-muted);
+    font-size: .8rem;
+    margin-top: .6rem;
+    flex-wrap: wrap;
+  }
+  .f-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    font-size: .75rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--f-blue), var(--f-sky));
+  }
+  .f-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--f-surface-2);
+    color: var(--f-blue);
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .f-stat:hover { background: #d8e9fb; }
+  .f-stat.liked {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+  }
+  .f-form {
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
+    border-radius: var(--f-radius);
+    padding: 1rem;
+    display: grid;
+    gap: .6rem;
+    box-shadow: 0 6px 20px -12px rgba(11,61,145,.25);
+    margin-top: 1rem;
+  }
+  .f-form input,
+  .f-form textarea {
+    width: 100%;
+    background: var(--f-surface-2);
+    color: var(--f-text);
+    border: 1px solid var(--f-border);
+    border-radius: 10px;
+    padding: .65rem .85rem;
+    font: inherit;
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .f-form input::placeholder,
+  .f-form textarea::placeholder { color: #94abc6; }
+  .f-form input:focus,
+  .f-form textarea:focus {
+    border-color: var(--f-blue);
+    box-shadow: 0 0 0 3px rgba(29,111,224,.15);
+    background: #fff;
+  }
+  .f-form textarea { resize: vertical; min-height: 80px; }
+  .f-form button[type="submit"] {
+    justify-self: end;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    padding: .6rem 1.3rem;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--f-blue), var(--f-sky));
+    box-shadow: 0 8px 18px -8px rgba(29,111,224,.6);
+    transition: transform .1s ease, filter .15s ease;
+  }
+  .f-form button[type="submit"]:hover { filter: brightness(1.05); }
+  .f-form button[type="submit"]:active { transform: scale(.98); }
+  .f-form.locked { opacity: .6; pointer-events: none; }
+  .f-lock-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: .8rem;
+    color: var(--f-muted);
+    padding: .4rem;
+    background: var(--f-surface-2);
+    border-radius: 8px;
+  }
+  .f-back {
+    background: #fff;
+    border: 1px solid var(--f-border);
+    color: var(--f-blue);
+    padding: .45rem 1rem;
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+  .f-back:hover { border-color: var(--f-blue); background: var(--f-surface-2); }
+  .f-empty {
+    text-align: center;
+    color: var(--f-muted);
+    padding: 2rem 1rem;
+    border: 1px dashed var(--f-sky);
+    border-radius: var(--f-radius);
+    background: #fff;
+    font-size: .9rem;
+  }
+
+  /* ===== КОММЕНТАРИИ ===== */
+  .comments-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.55);
+    z-index: 450;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .comments-overlay.open { opacity: 1; pointer-events: auto; }
+  .comments-sheet {
+    width: 100%;
+    height: 80%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s var(--ease-spring);
+    overflow: hidden;
+    padding-bottom: var(--safe-bottom);
+  }
+  .comments-overlay.open .comments-sheet { transform: translateY(0); }
+  .comments-handle {
+    width: 40px; height: 4px;
+    background: #cbd5e1;
+    border-radius: 4px;
+    margin: 10px auto 8px;
+    flex-shrink: 0;
+  }
+  .comments-header {
+    padding: 0 18px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--f-border);
+    flex-shrink: 0;
+  }
+  .comments-header h3 {
+    font-size: 1.05rem;
+    color: var(--f-navy);
+    font-weight: 700;
+  }
+  .comments-close {
+    background: var(--f-surface-2);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: var(--f-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .comments-form {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--f-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    background: var(--f-surface-2);
+  }
+  .comments-form input,
+  .comments-form textarea {
+    width: 100%;
+    background: #fff;
+    color: var(--f-text);
+    border: 1px solid var(--f-border);
+    border-radius: 10px;
+    padding: .55rem .75rem;
+    font: inherit;
+    font-size: .85rem;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .comments-form input:focus,
+  .comments-form textarea:focus {
+    border-color: var(--f-blue);
+    box-shadow: 0 0 0 3px rgba(29,111,224,.15);
+  }
+  .comments-form textarea { resize: vertical; min-height: 54px; }
+  .comments-form button {
+    align-self: flex-end;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    padding: .55rem 1.2rem;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--f-blue), var(--f-sky));
+    box-shadow: 0 8px 18px -8px rgba(29,111,224,.6);
+    transition: transform .1s ease, filter .15s ease;
+  }
+  .comments-form button:hover { filter: brightness(1.05); }
+  .comments-form button:active { transform: scale(.98); }
+  .comments-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 18px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .comment-item {
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    animation: commentIn 0.3s ease;
+  }
+  @keyframes commentIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .comment-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .comment-author {
+    font-weight: 700;
+    font-size: .85rem;
+    color: var(--f-navy);
+  }
+  .comment-body {
+    font-size: .85rem;
+    color: #37527a;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .comments-empty {
+    text-align: center;
+    color: var(--f-muted);
+    padding: 2rem 1rem;
+    font-size: .9rem;
+  }
+
+  /* ===== МОДАЛКА ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 300;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 22px 20px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    transform: translateY(16px) scale(0.96);
+    transition: transform 0.25s var(--ease-spring);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-title {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-shadow);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #93c5fd;
+  }
+  .modal-text { font-size: 0.9rem; color: #334155; line-height: 1.5; }
+  .modal-close {
+    margin-top: 16px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* ===== ТОСТ ===== */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(96px + var(--safe-bottom));
+    transform: translateX(-50%) translateY(20px);
+    background: #1e3a8a;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 900;
+    white-space: nowrap;
+    max-width: 90vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== НИЖНЕЕ МЕНЮ ===== */
+  .menu {
+    position: fixed;
+    left: 50%;
+    bottom: calc(12px + var(--safe-bottom));
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 520px;
+    backdrop-filter: blur(14px) saturate(180%) contrast(200%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%) contrast(200%);
+    background: rgba(30, 58, 138, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    padding: 8px;
+    border-radius: 99rem;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 400;
+  }
+  .menu::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 2px 2px 5px -2px rgba(255, 255, 255, 0.4),
+      inset -2px -2px 5px 2px rgba(255, 255, 255, 0.4),
+      inset 0 -2px 0 rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .menu a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    padding: 10px 6px;
+    border-radius: 999rem;
+    cursor: pointer;
+    transition:
+      background 0.18s var(--ease-spring),
+      color 0.18s var(--ease-spring),
+      transform 0.18s var(--ease-spring),
+      box-shadow 0.3s ease-in-out;
+  }
+  .menu a:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    transform: rotate(2.2deg);
+    color: #ffffff;
+  }
+  .menu a svg { width: 1.4rem; height: 1.4rem; }
+  .menu a span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .menu a.active {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1e3a8a;
+  }
+  .menu a:active { transform: scale(0.98); }
+
+  /* ===== НАСТРОЙКИ ===== */
+  .settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.55);
+    z-index: 500;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .settings-overlay.open { opacity: 1; pointer-events: auto; }
+  .settings-sheet {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    padding: 20px 20px calc(30px + var(--safe-bottom));
+    transform: translateY(100%);
+    transition: transform 0.3s var(--ease-spring);
+  }
+  .settings-overlay.open .settings-sheet { transform: translateY(0); }
+  .sheet-handle {
+    width: 40px; height: 4px;
+    background: #cbd5e1;
+    border-radius: 4px;
+    margin: 0 auto 16px;
+  }
+  .sheet-title {
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-shadow);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dbeafe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sheet-close {
+    background: #eff6ff;
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 15px;
+    background: #f8fafc;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--light);
+    border-left: 4px solid var(--primary);
+    transition: background 0.2s;
+  }
+  .settings-item:hover { background: #eff6ff; }
+  .settings-item .arrow { color: var(--primary); font-weight: 800; }
+
+  /* ===== ТИКЕТ ===== */
+  .ticket-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+  }
+  .ticket-overlay.open { opacity: 1; pointer-events: auto; }
+  .ticket-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 280px;
+  }
+  .stage { position: relative; width: 240px; height: 400px; }
+
+  .ticket-card {
+    --width: 240px;
+    --height: 400px;
+    --perforation-size: 12px;
+    --cutouts-adjust: 110px;
+    box-sizing: border-box;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+    grid-template-areas: "header" "body" "footer";
+    width: var(--width);
+    height: var(--height);
+    padding: var(--perforation-size) 0;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    user-select: none;
+    overflow: hidden;
+    filter: drop-shadow(0 2px 1px #00000025) drop-shadow(0 4px 3px #00000025)
+      drop-shadow(0 10px 9px #00000025) drop-shadow(0 20px 20px #00000025)
+      drop-shadow(0 40px 40px #00000025);
+  }
+  .ticket-card.hidden { visibility: hidden; }
+  .ticket-card.half {
+    position: absolute;
+    top: 0; left: 0;
+    filter: none;
+    will-change: transform;
+  }
+  .ticket-card .bg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: #fff;
+    filter: url(#bump);
+    mask:
+      radial-gradient(circle at 50% 0, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+      radial-gradient(circle at 50% 100%, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+      radial-gradient(circle 8px at left center, #000 98%, #0000 100%),
+      radial-gradient(circle 8px at right center, #000 98%, #0000 100%),
+      repeating-linear-gradient(90deg, #000 10px, #000 15px, #0000 16px, #0000 24px);
+    mask-repeat: repeat-x, repeat-x, no-repeat, no-repeat, repeat-x;
+    mask-size:
+      calc(var(--perforation-size) * 2) 100%,
+      calc(var(--perforation-size) * 2) 100%,
+      16px 16px, 16px 16px, 10px 2px;
+    mask-position:
+      calc(0.5 * var(--perforation-size)) top,
+      calc(0.5 * var(--perforation-size)) bottom,
+      left var(--cutouts-adjust),
+      right var(--cutouts-adjust),
+      0 calc(var(--cutouts-adjust) + 7px);
+    mask-composite: intersect, exclude, add, add;
+  }
+  .ticket-card .holographic {
+    background-image: linear-gradient(to bottom, #fe58, 90%, #0002),
+      conic-gradient(at 60% 50%, #ccc, #ff6bfe, #00f9f8, #ddd, #0081fd, #eef0bc, #0081fd, #ff6bfe, #0002, #0081fd, #ddd, #01fefb, #ccc);
+  }
+  .ticket-card .holographic::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 70% 20%, #f0f, #0000),
+      repeating-radial-gradient(circle at 30% 80%, #fff, #f4a 48px, #eeeeee 150px);
+    mix-blend-mode: color-burn;
+  }
+  .ticket-card .holographic::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #f205, #f00, #0f0, #f205);
+    mix-blend-mode: difference;
+    animation: bg-pos 3s ease-in-out infinite alternate;
+    background-position: 0 0;
+    background-size: 100% 300%;
+    background-repeat: repeat;
+  }
+  @keyframes bg-pos { to { background-position: 0 500px; } }
+  .ticket-card .header {
+    position: relative;
+    grid-area: header;
+    margin: 0 8px;
+    text-align: center;
+    z-index: 1;
+    font-family: "Impact", sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 2px;
+    color: #ffffff9f;
+    -webkit-text-stroke: #fff 0.5px;
+    mix-blend-mode: difference;
+  }
+  .ticket-card .body {
+    grid-area: body;
+    margin: 0 1em;
+    padding: 0.3em;
+    font-weight: 200;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ticket-card .field { display: flex; flex-direction: column; gap: 3px; }
+  .ticket-card .field label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #1e3a8a;
+  }
+  .ticket-card .field input,
+  .ticket-card .field textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid rgba(30,58,138,0.3);
+    background: rgba(255,255,255,0.6);
+    border-radius: 6px 6px 0 0;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: #0f172a;
+    padding: 6px 8px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .ticket-card .field input:focus,
+  .ticket-card .field textarea:focus {
+    border-bottom-color: #1e3a8a;
+    background: rgba(255,255,255,0.9);
+  }
+  .ticket-card .field textarea { min-height: 64px; line-height: 1.3; }
+  .ticket-card .footer {
+    grid-area: footer;
+    z-index: 1;
+    margin: 0 1em 1em 1em;
+  }
+  .ticket-card .number {
+    margin-bottom: 0.75rem;
+    text-align: center;
+    border-radius: 999px 0;
+    color: #000;
+    font-weight: 200;
+    font-size: 0.8rem;
+  }
+  .ticket-card .number .bold { font-weight: 600; }
+  .ticket-card .barcode {
+    justify-self: center;
+    width: 0;
+    height: 32px;
+    box-shadow:
+      0px 0 0 1px #000, 5px 0 0 1px #000, 7px 0 0 1px #000,
+      11px 0 0 1px #000, 15px 0 0 1px #000, 16px 0 0 1px #000,
+      22px 0 0 1px #000, 27px 0 0 1px #000, 30px 0 0 1px #000,
+      35px 0 0 1px #000, 36px 0 0 1px #000, 39px 0 0 1px #000,
+      43px 0 0 1px #000, 47px 0 0 1px #000, 50px 0 0 1px #000,
+      55px 0 0 1px #000, 59px 0 0 1px #000, 60px 0 0 1px #000,
+      64px 0 0 1px #000, 69px 0 0 1px #000, 70px 0 0 1px #000,
+      74px 0 0 1px #000;
+    transform: translateX(37px);
+  }
+  .ticket-card .symbol {
+    position: absolute;
+    top: 1.3em;
+    right: 0px;
+    rotate: 185deg;
+    font-size: 1.1em;
+    color: #fff;
+    line-height: 0.5;
+    opacity: 0.2;
+  }
+  .ticket-submit {
+    width: 240px;
+    max-width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.45);
+    transition: transform 0.15s ease, opacity 0.3s;
+  }
+  .ticket-submit:active { transform: scale(0.97); }
+  .ticket-submit:disabled { opacity: 0.4; cursor: default; }
+
+  /* ===== LOADER ===== */
+  .loader-overlay {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(94, 234, 212, 0.08), transparent 60%),
+      var(--loader-bg);
+    z-index: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    color: var(--loader-text);
+    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .loader-overlay.open { opacity: 1; pointer-events: auto; }
+  .loader-stage { position: relative; width: 160px; height: 160px; }
+  .loader-stage svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .loader-track { fill: none; stroke: var(--loader-track); stroke-width: 4; }
+  .loader-arc {
+    fill: none;
+    stroke: url(#loaderGrad);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 90 400;
+    transform-origin: 80px 80px;
+    transform: rotate(-90deg);
+    animation: loaderOrbit 1.1s linear infinite;
+    transition: stroke-dasharray 0.5s ease, opacity 0.4s ease;
+  }
+  .loader-arc.done { animation: none; stroke-dasharray: 440 0; transform: rotate(-90deg); }
+  .loader-arc.fade { opacity: 0; }
+  @keyframes loaderOrbit { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+  .loader-ripple {
+    fill: none;
+    stroke: var(--loader-accent);
+    stroke-width: 2;
+    opacity: 0;
+    transform-origin: 80px 80px;
+    transform: scale(0.9);
+  }
+  .loader-ripple.go { animation: loaderRipple 1s ease-out forwards; }
+  @keyframes loaderRipple {
+    0% { opacity: 0.6; transform: scale(0.9); }
+    100% { opacity: 0; transform: scale(1.35); }
+  }
+  .loader-check {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .loader-check.show { opacity: 1; transform: scale(1); }
+  .loader-check-mark {
+    fill: none;
+    stroke: var(--loader-accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+  }
+  .loader-check.show .loader-check-mark {
+    animation: loaderDraw 0.5s ease-out 0.25s forwards;
+  }
+  @keyframes loaderDraw { to { stroke-dashoffset: 0; } }
+  .loader-label {
+    position: relative;
+    height: 1.6em;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    overflow: hidden;
+  }
+  .loader-label span {
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+  }
+  .loader-label .loader-done-text {
+    transform: translateY(100%);
+    opacity: 0;
+    color: var(--loader-accent);
+  }
+  .loader-label.finished .loader-loading-text {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  .loader-label.finished .loader-done-text {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .loader-dots::after {
+    content: "";
+    animation: loaderDots 1.2s steps(3, end) infinite;
+  }
+  @keyframes loaderDots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+  }
+  .loader-label.finished .loader-dots::after { content: ""; animation: none; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (min-width: 640px) {
+    .products-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .cover { padding: 36px 20px 28px; }
+    .cover-title { font-size: 1.8rem; }
+  }
+  @media (min-width: 900px) {
+    .products-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 360px) {
+    .products-grid { grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px 12px; }
+    .card { padding: 0.7rem; }
+    .image_container { height: 5.5rem; }
+    .title { font-size: 0.85rem; }
+    .price { font-size: 1.05rem; }
+    .cover-title { font-size: 1.2rem; }
+    .stage { width: 220px; height: 370px; }
+    .ticket-card { --width: 220px; --height: 370px; --cutouts-adjust: 100px; }
+    .ticket-submit { width: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== ГЛАВНАЯ ===== -->
+<div class="page active" id="pageMain">
+  <div class="cover">
+    <div class="cover-title">White Duck</div>
+    <div class="cover-sub">
+      <span class="line"></span>
+      <span class="text">кря кря</span>
+      <span class="line"></span>
+    </div>
+  </div>
+
+  <div class="ad-banner">
+    <div class="ad-label">Реклама</div>
+    <div class="ad-title">Скидка 20% на первый заказ</div>
+    <div class="ad-text">Промокод WHITEDUCK20 — успейте до конца недели!</div>
+  </div>
+
+  <div class="products-grid">
+    <div class="card" data-product="Товар 1" data-desc="это 1" data-card>
+      <div class="image_container">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image">
+          <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+        </svg>
+      </div>
+      <div class="title-row">
+        <div class="title"><span>Товар 1</span></div>
+        <button class="info-btn" data-info title="Описание">i</button>
+      </div>
+      <div class="size">
+        <span>Граммовка</span>
+        <ul class="list-size">
+          <li class="item-list"><button class="item-list-button" data-weight="0.5" data-price="1500">0.5г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="1" data-price="3000">1г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="5" data-price="10000">5г</button></li>
+        </ul>
+      </div>
+      <div class="action">
+        <div class="price"><span class="price-value">— ₽</span></div>
+        <button class="ripple-btn" data-buy>
+          <span class="transition"></span>
+          <span class="gradient"></span>
+          <span class="label">Купить</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" data-product="Товар 2" data-desc="это 2" data-card>
+      <div class="image_container">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image">
+          <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+        </svg>
+      </div>
+      <div class="title-row">
+        <div class="title"><span>Товар 2</span></div>
+        <button class="info-btn" data-info title="Описание">i</button>
+      </div>
+      <div class="size">
+        <span>Граммовка</span>
+        <ul class="list-size">
+          <li class="item-list"><button class="item-list-button" data-weight="0.5" data-price="1500">0.5г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="1" data-price="3000">1г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="5" data-price="10000">5г</button></li>
+        </ul>
+      </div>
+      <div class="action">
+        <div class="price"><span class="price-value">— ₽</span></div>
+        <button class="ripple-btn" data-buy>
+          <span class="transition"></span>
+          <span class="gradient"></span>
+          <span class="label">Купить</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" data-product="Товар 3" data-desc="это 3" data-card>
+      <div class="image_container">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image">
+          <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+        </svg>
+      </div>
+      <div class="title-row">
+        <div class="title"><span>Товар 3</span></div>
+        <button class="info-btn" data-info title="Описание">i</button>
+      </div>
+      <div class="size">
+        <span>Граммовка</span>
+        <ul class="list-size">
+          <li class="item-list"><button class="item-list-button" data-weight="0.5" data-price="1500">0.5г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="1" data-price="3000">1г</button></li>
+          <li class="item-list"><button class="item-list-button" data-weight="5" data-price="10000">5г</button></li>
+        </ul>
+      </div>
+      <div class="action">
+        <div class="price"><span class="price-value">— ₽</span></div>
+        <button class="ripple-btn" data-buy>
+          <span class="transition"></span>
+          <span class="gradient"></span>
+          <span class="label">Купить</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" data-product="Для работы" data-desc="Услуга для работы" data-card>
+      <div class="image_container">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image">
+          <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+        </svg>
+      </div>
+      <div class="title-row">
+        <div class="title"><span>Для работы</span></div>
+        <button class="info-btn" data-info title="Описание">i</button>
+      </div>
+      <div class="size">
+        <span>Услуга</span>
+        <ul class="list-size">
+          <li class="item-list"><button class="item-list-button" disabled style="opacity:.5;cursor:default;">без граммовки</button></li>
+        </ul>
+      </div>
+      <div class="action">
+        <div class="price"><span class="price-value">500 ₽</span></div>
+        <button class="ripple-btn" data-buy data-no-weight>
+          <span class="transition"></span>
+          <span class="gradient"></span>
+          <span class="label">Купить</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ПРОФИЛЬ ===== -->
+<div class="page" id="pageProfile">
+  <div class="profile-wrap">
+    <div class="p-banner">
+      <svg viewBox="0 0 760 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#1e3a8a"/>
+            <stop offset="0.55" stop-color="#2563eb"/>
+            <stop offset="1" stop-color="#38bdf8"/>
+          </linearGradient>
+          <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#bfdbfe"/>
+            <stop offset="1" stop-color="#bfdbfe" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="760" height="220" fill="url(#sky)"/>
+        <circle cx="560" cy="110" r="150" fill="url(#sun)"/>
+        <circle cx="560" cy="110" r="52" fill="#e0f2fe" opacity="0.92"/>
+        <g fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.5">
+          <circle cx="560" cy="110" r="78"/>
+          <circle cx="560" cy="110" r="104"/>
+        </g>
+        <path d="M0 170 Q120 120 240 160 T480 150 T760 135 L760 220 L0 220 Z" fill="#1e3a8a" opacity="0.85"/>
+        <path d="M0 195 Q160 160 320 190 T640 180 T760 175 L760 220 L0 220 Z" fill="#0f2557"/>
+        <g fill="#ffffff" opacity="0.7">
+          <circle cx="90" cy="40" r="1.6"/>
+          <circle cx="210" cy="70" r="1.2"/>
+          <circle cx="340" cy="30" r="1.4"/>
+          <circle cx="700" cy="50" r="1.5"/>
+          <circle cx="650" cy="20" r="1"/>
+          <circle cx="40" cy="90" r="1"/>
+        </g>
+      </svg>
+      <div class="banner-tag">Иллюстрация автора</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="header-profile">
+        <div class="avatar-wrap" id="avatarWrap">
+          <div class="ring"></div>
+          <div class="avatar" id="avatar">А</div>
+          <div class="lvl-badge" id="lvlBadge">0</div>
+        </div>
+        <div class="identity">
+          <h1 id="name">Анна Лунд</h1>
+          <p id="handle">@anna.lund</p>
+          <div class="xp-row">
+            <span class="lvl-text">Ур. <span id="lvlText">0</span></span>
+            <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+            <span id="xp">0 / 100 XP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      История заказов
+      <small id="count">0 заказов</small>
+    </div>
+    <div class="orders" id="orders"></div>
+  </div>
+</div>
+
+<!-- ===== ФОРУМ ===== -->
+<div class="page" id="pageForum">
+  <div class="forum-wrap">
+    <div class="forum-header">
+      <div class="forum-logo" id="forumHome">Форум</div>
+      <span class="forum-tag">Обсуждения</span>
+    </div>
+
+    <section id="forum-list-view">
+      <div id="forum-topics"></div>
+
+      <div class="section-title" style="color:var(--f-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;margin:1.5rem 0 .8rem;">Новая тема</div>
+
+      <form id="forum-new-topic-form" class="f-form">
+        <input name="author" placeholder="Ваше имя" required>
+        <input name="title" placeholder="Заголовок темы" required>
+        <textarea name="body" placeholder="О чём хотите поговорить?" required></textarea>
+        <button type="submit">Опубликовать</button>
+      </form>
+    </section>
+
+    <section id="forum-topic-view" style="display:none;">
+      <button class="f-back" id="forum-back">← Все темы</button>
+      <div id="forum-topic-content"></div>
+    </section>
+  </div>
+</div>
+
+<!-- ===== ПАНЕЛЬ КОММЕНТАРИЕВ ===== -->
+<div class="comments-overlay" id="commentsOverlay">
+  <div class="comments-sheet">
+    <div class="comments-handle"></div>
+    <div class="comments-header">
+      <h3>Комментарии</h3>
+      <button class="comments-close" onclick="closeComments()">✕</button>
+    </div>
+
+    <form class="comments-form" id="commentsForm">
+      <input type="text" id="commentAuthor" placeholder="Ваше имя" required>
+      <textarea id="commentText" placeholder="Оставить комментарий..." required></textarea>
+      <button type="submit">Отправить</button>
+    </form>
+
+    <div class="comments-list" id="commentsList"></div>
+  </div>
+</div>
+
+<!-- ===== МОДАЛКА ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Описание</div>
+    <div class="modal-text" id="modalText">—</div>
+    <button class="modal-close" onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
+<!-- ===== НАСТРОЙКИ ===== -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">
+      Настройки
+      <button class="sheet-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-item" onclick="openTicket()">
+      <span>🎫 Тикет</span>
+      <span class="arrow">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ТИКЕТ ===== -->
+<div class="ticket-overlay" id="ticketOverlay">
+  <div class="ticket-form" id="ticketForm">
+    <div class="stage" id="stage">
+      <div class="ticket-card" id="ticketOriginal">
+        <div class="header">
+          ТИКЕТ
+          <div class="symbol">✁</div>
+        </div>
+        <div class="body">
+          <div class="field">
+            <label>Тема тикета</label>
+            <input type="text" id="ticketSubject" placeholder="Введите тему...">
+          </div>
+          <div class="field">
+            <label>Описание проблемы</label>
+            <textarea id="ticketProblem" placeholder="Опишите проблему..."></textarea>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="number">Seat <span class="bold">E7</span></div>
+          <div class="barcode"></div>
+        </div>
+        <div class="bg holographic"></div>
+      </div>
+    </div>
+    <button class="ticket-submit" id="ticketSubmit" onclick="sendTicket()">Отправить тикет</button>
+  </div>
+</div>
+
+<!-- ===== LOADER ===== -->
+<div class="loader-overlay" id="loaderOverlay">
+  <div class="loader-stage">
+    <svg viewBox="0 0 160 160" aria-hidden="true">
+      <defs>
+        <linearGradient id="loaderGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#5eead4"/>
+          <stop offset="100%" stop-color="#38bdf8"/>
+        </linearGradient>
+      </defs>
+      <circle class="loader-track" cx="80" cy="80" r="70"/>
+      <circle class="loader-arc" id="loaderArc" cx="80" cy="80" r="70"/>
+      <circle class="loader-ripple" id="loaderRipple" cx="80" cy="80" r="70"/>
+    </svg>
+    <svg class="loader-check" id="loaderCheck" viewBox="0 0 160 160" aria-hidden="true">
+      <path class="loader-check-mark" d="M55 84 L73 102 L106 65"/>
+    </svg>
+  </div>
+  <div class="loader-label" id="loaderLabel" role="status" aria-live="polite">
+    <span class="loader-loading-text">Загрузка<span class="loader-dots"></span></span>
+    <span class="loader-done-text">Готово</span>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <filter id="bump">
+    <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+</svg>
+
+<div class="toast" id="toast">Выберите граммовку</div>
+
+<!-- ===== НИЖНЕЕ МЕНЮ ===== -->
+<div class="menu">
+  <a class="active" onclick="showPage('pageMain', this)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z"></path>
+      <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z"></path>
+    </svg>
+    <span>Home</span>
+  </a>
+
+  <a onclick="showPage('pageProfile', this)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd"></path>
+    </svg>
+    <span>Профиль</span>
+  </a>
+
+  <a onclick="showPage('pageForum', this)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223Z" clip-rule="evenodd"></path>
+    </svg>
+    <span>Форум</span>
+  </a>
+
+  <a onclick="openSettings()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.004 10.407c.138.435-.216.842-.672.842h-3.465a.75.75 0 0 1-.65-.375l-1.732-3c-.229-.396-.053-.907.393-1.004a5.252 5.252 0 0 1 6.126 3.537ZM8.12 8.464c.307-.338.838-.235 1.066.16l1.732 3a.75.75 0 0 1 0 .75l-1.732 3c-.229.397-.76.5-1.067.161A5.23 5.23 0 0 1 6.75 12a5.23 5.23 0 0 1 1.37-3.536ZM10.878 17.13c-.447-.098-.623-.608-.394-1.004l1.733-3.002a.75.75 0 0 1 .65-.375h3.465c.457 0 .81.407.672.842a5.252 5.252 0 0 1-6.126 3.539Z"></path>
+      <path fill-rule="evenodd" d="M21 12.75a.75.75 0 1 0 0-1.5h-.783a8.22 8.22 0 0 0-.237-1.357l.734-.267a.75.75 0 1 0-.513-1.41l-.735.268a8.24 8.24 0 0 0-.689-1.192l.6-.503a.75.75 0 1 0-.964-1.149l-.6.504a8.3 8.3 0 0 0-1.054-.885l.391-.678a.75.75 0 1 0-1.299-.75l-.39.676a8.188 8.188 0 0 0-1.295-.47l.136-.77a.75.75 0 0 0-1.477-.26l-.136.77a8.36 8.36 0 0 0-1.377 0l-.136-.77a.75.75 0 1 0-1.477.26l.136.77c-.448.121-.88.28-1.294.47l-.39-.676a.75.75 0 0 0-1.3.75l.392.678a8.29 8.29 0 0 0-1.054.885l-.6-.504a.75.75 0 1 0-.965 1.149l.6.503a8.243 8.243 0 0 0-.689 1.192L3.8 8.216a.75.75 0 1 0-.513 1.41l.735.267a8.222 8.222 0 0 0-.238 1.356h-.783a.75.75 0 0 0 0 1.5h.783c.042.464.122.917.238 1.356l-.735.268a.75.75 0 0 0 .513 1.41l.735-.268c.197.417.428.816.69 1.191l-.6.504a.75.75 0 0 0 .963 1.15l.601-.505c.326.323.679.62 1.054.885l-.392.68a.75.75 0 0 0 1.3.75l.39-.679c.414.192.847.35 1.294.471l-.136.77a.75.75 0 0 0 1.477.261l.137-.772a8.332 8.332 0 0 0 1.376 0l.136.772a.75.75 0 1 0 1.477-.26l-.136-.771a8.19 8.19 0 0 0 1.294-.47l.391.677a.75.75 0 0 0 1.3-.75l-.393-.679a8.29 8.29 0 0 0 1.054-.885l.601.504a.75.75 0 0 0 .964-1.15l-.6-.503c.261-.375.492-.774.69-1.191l.735.267a.75.75 0 1 0 .512-1.41l-.734-.267c.115-.439.195-.892.237-1.356h.784Zm-2.657-3.06a6.744 6.744 0 0 0-1.19-2.053 6.784 6.784 0 0 0-1.82-1.51A6.705 6.705 0 0 0 12 5.25a6.8 6.8 0 0 0-1.225.11 6.7 6.7 0 0 0-2.15.793 6.784 6.784 0 0 0-2.952 3.489.76.76 0 0 1-.036.098A6.74 6.74 0 0 0 5.251 12a6.74 6.74 0 0 0 3.366 5.842l.009.005a6.704 6.704 0 0 0 2.18.798l.022.003a6.792 6.792 0 0 0 2.368-.004 6.704 6.704 0 0 0 2.205-.811 6.785 6.785 0 0 0 1.762-1.484l.009-.01.009-.01a6.743 6.743 0 0 0 1.18-2.066c.253-.707.39-1.469.39-2.263a6.74 6.74 0 0 0-.408-2.309Z" clip-rule="evenodd"></path>
+    </svg>
+    <span>Settings</span>
+  </a>
+</div>
+
+<script>
+  // ===== Уровень пользователя =====
+  const user = {
+    name: "Анна Лунд",
+    handle: "anna.lund",
+    level: 0,
+    xp: 0,
+    xpNext: 100
+  };
+
+  function showPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
+    window.scrollTo({ top: 0 });
+  }
+
+  // ===== Профиль =====
+  const orders = [
+    { id: "#1042", title: "Авторская иллюстрация", date: "12 окт 2026", price: "1 200 ₽", status: "done" },
+    { id: "#1057", title: "Логотип для студии", date: "20 окт 2026", price: "2 500 ₽", status: "pending" }
+  ];
+  const statusText = { done: "Выполнен", pending: "В работе" };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  function renderProfile() {
+    const pct = Math.min(100, (user.xp / user.xpNext) * 100);
+    document.getElementById("name").textContent = user.name;
+    document.getElementById("handle").textContent = "@" + user.handle;
+    document.getElementById("avatar").textContent = user.name.charAt(0);
+    document.getElementById("lvlText").textContent = user.level;
+    document.getElementById("lvlBadge").textContent = user.level;
+    document.getElementById("xp").textContent = user.xp + " / " + user.xpNext + " XP";
+    document.getElementById("barFill").style.width = pct + "%";
+    document.getElementById("avatarWrap").style.setProperty("--p", pct);
+
+    const list = document.getElementById("orders");
+    document.getElementById("count").textContent = orders.length + " " + (orders.length === 1 ? "заказ" : "заказов");
+    if (orders.length === 0) {
+      list.innerHTML = '<div class="empty">Заказов пока нет</div>';
+      return;
+    }
+    list.innerHTML = orders.map(o => `
+      <div class="order">
+        <div class="order-title">${esc(o.title)}</div>
+        <div class="order-price">${esc(o.price)}</div>
+        <div class="order-meta">${esc(o.id)} · ${esc(o.date)}</div>
+        <span class="status ${o.status === "pending" ? "pending" : ""}">${statusText[o.status] || esc(o.status)}</span>
+      </div>
+    `).join("");
+  }
+  renderProfile();
+
+  // ===== Описание товара =====
+  document.querySelectorAll('[data-info]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.card');
+      document.getElementById('modalTitle').textContent = card.dataset.product;
+      document.getElementById('modalText').textContent = card.dataset.desc || '—';
+      document.getElementById('modalOverlay').classList.add('open');
+    });
+  });
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target.id === 'modalOverlay') closeModal();
+  });
+
+  // ===== Граммовка + цена + покупка =====
+  document.querySelectorAll('.card').forEach(card => {
+    const weightBtns = card.querySelectorAll('.item-list-button[data-weight]');
+    const priceValue = card.querySelector('.price-value');
+    weightBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        weightBtns.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        card.dataset.selectedWeight = btn.dataset.weight;
+        card.dataset.selectedPrice = btn.dataset.price;
+        priceValue.textContent = btn.dataset.price + ' ₽';
+      });
+    });
+    const buyBtn = card.querySelector('[data-buy]');
+    buyBtn.addEventListener('click', () => {
+      if (buyBtn.hasAttribute('data-no-weight')) {
+        showToast('Добавлено: ' + card.dataset.product);
+        return;
+      }
+      if (!card.dataset.selectedWeight) {
+        showToast('Выберите граммовку');
+        return;
+      }
+      showToast('Куплено: ' + card.dataset.product + ' (' + card.dataset.selectedWeight + 'г) — ' + card.dataset.selectedPrice + ' ₽');
+    });
+  });
+
+  // ===== Настройки =====
+  function openSettings() { document.getElementById('settingsOverlay').classList.add('open'); }
+  function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+  document.getElementById('settingsOverlay').addEventListener('click', e => {
+    if (e.target.id === 'settingsOverlay') closeSettings();
+  });
+
+  // ===== Тикет =====
+  function openTicket() {
+    closeSettings();
+    resetTicket();
+    document.getElementById('ticketOverlay').classList.add('open');
+  }
+  function resetTicket() {
+    document.querySelectorAll('#stage .half').forEach(h => h.remove());
+    const orig = document.getElementById('ticketOriginal');
+    orig.classList.remove('hidden');
+    document.getElementById('ticketSubmit').disabled = false;
+    document.getElementById('ticketSubmit').textContent = 'Отправить тикет';
+    document.getElementById('ticketSubject').value = '';
+    document.getElementById('ticketProblem').value = '';
+    busy = false;
+  }
+
+  let W, H, TEAR_Y, STEP = 6;
+  let busy = false;
+
+  function measureStage() {
+    const stage = document.getElementById('stage');
+    const card = document.getElementById('ticketOriginal');
+    W = card.offsetWidth;
+    H = card.offsetHeight;
+    TEAR_Y = H * 0.28;
+  }
+
+  function makeJaggedEdge() {
+    const pts = [];
+    for (let x = 0; x <= W; x += STEP) pts.push({ x, y: TEAR_Y + (Math.random() * 6 - 3) });
+    return pts;
+  }
+  function clipTop(pts) {
+    const p = [`0px 0px`, `${W}px 0px`];
+    for (let i = pts.length - 1; i >= 0; i--) p.push(`${pts[i].x}px ${pts[i].y.toFixed(1)}px`);
+    return `polygon(${p.join(', ')})`;
+  }
+  function clipBottom(pts) {
+    const p = pts.map(q => `${q.x}px ${q.y.toFixed(1)}px`);
+    p.push(`${W}px ${H}px`, `0px ${H}px`);
+    return `polygon(${p.join(', ')})`;
+  }
+  function makeHalf(clip) {
+    const orig = document.getElementById('ticketOriginal');
+    const el = orig.cloneNode(true);
+    el.removeAttribute('id');
+    el.classList.remove('hidden');
+    el.classList.add('half');
+    el.style.clipPath = clip;
+    el.style.webkitClipPath = clip;
+    document.getElementById('stage').appendChild(el);
+    return el;
+  }
+
+  const shakeKF = [
+    { transform: 'translate(0, 0) rotate(0deg)' },
+    { transform: 'translate(-2px, 0) rotate(-0.6deg)' },
+    { transform: 'translate(2px, 0) rotate(0.6deg)' },
+    { transform: 'translate(-2px, 0) rotate(-0.6deg)' },
+    { transform: 'translate(2px, 0) rotate(0.6deg)' },
+    { transform: 'translate(0, 0) rotate(0deg)' }
+  ];
+
+  async function tearTicket() {
+    if (busy) return;
+    busy = true;
+    measureStage();
+    const orig = document.getElementById('ticketOriginal');
+    const pts = makeJaggedEdge();
+    orig.classList.add('hidden');
+    const top = makeHalf(clipTop(pts));
+    const bottom = makeHalf(clipBottom(pts));
+    await Promise.all([
+      top.animate(shakeKF, { duration: 500, easing: 'linear' }).finished,
+      bottom.animate(shakeKF, { duration: 500, easing: 'linear' }).finished
+    ]);
+    const topAnim = top.animate(
+      [
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(-40px, -120px) rotate(-22deg)', opacity: 0 }
+      ],
+      { duration: 1100, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)', fill: 'forwards' }
+    );
+    const bottomAnim = bottom.animate(
+      [
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(30px, 150px) rotate(14deg)', opacity: 0 }
+      ],
+      { duration: 1300, easing: 'cubic-bezier(0.5, 0, 0.9, 0.6)', fill: 'forwards' }
+    );
+    await Promise.all([topAnim.finished, bottomAnim.finished]);
+    top.remove();
+    bottom.remove();
+  }
+
+  const loaderOverlay = document.getElementById('loaderOverlay');
+  const loaderArc = document.getElementById('loaderArc');
+  const loaderRipple = document.getElementById('loaderRipple');
+  const loaderCheck = document.getElementById('loaderCheck');
+  const loaderLabel = document.getElementById('loaderLabel');
+
+  function resetLoader() {
+    loaderArc.classList.remove('done', 'fade');
+    loaderRipple.classList.remove('go');
+    loaderCheck.classList.remove('show');
+    loaderLabel.classList.remove('finished');
+  }
+
+  function runLoader() {
+    return new Promise(resolve => {
+      resetLoader();
+      loaderOverlay.classList.add('open');
+      setTimeout(() => {
+        loaderArc.classList.add('done');
+        loaderArc.classList.add('fade');
+        loaderRipple.classList.add('go');
+        setTimeout(() => loaderCheck.classList.add('show'), 250);
+        loaderLabel.classList.add('finished');
+        setTimeout(() => {
+          loaderOverlay.classList.remove('open');
+          setTimeout(resolve, 300);
+        }, 1200);
+      }, 1800);
+    });
+  }
+
+  async function sendTicket() {
+    const subject = document.getElementById('ticketSubject').value.trim();
+    const problem = document.getElementById('ticketProblem').value.trim();
+    if (!subject) { showToast('Введите тему тикета'); return; }
+    if (!problem) { showToast('Опишите проблему'); return; }
+    await tearTicket();
+    await runLoader();
+    document.getElementById('ticketOverlay').classList.remove('open');
+    busy = false;
+    document.getElementById('ticketSubmit').disabled = false;
+    document.getElementById('ticketSubmit').textContent = 'Отправить тикет';
+    showToast('Тикет отправлен');
+  }
+
+  // ===== Уведомление =====
+  let toastTimer;
+  function showToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // =========================================================
+  // ===== ФОРУМ =====
+  // =========================================================
+  const forumTopics = [
+    {
+      id: 1,
+      author: "Иван Петров",
+      title: "Как правильно хранить специи?",
+      body: "Купил набор специй, но не знаю, как их хранить, чтобы они не потеряли аромат. Поделитесь опытом!",
+      replies: [
+        { author: "Мария", body: "Главное — тёмное место и герметичная банка. Влажность и свет убивают аромат." }
+      ],
+      likes: 12,
+      views: 84,
+      liked: false
+    },
+    {
+      id: 2,
+      author: "Ольга Смирнова",
+      title: "Смесь для глинтвейна — рецепт",
+      body: "Кто делал домашнюю смесь для глинтвейна? Какие пропорции корицы, гвоздики и кардамона?",
+      replies: [],
+      likes: 7,
+      views: 41,
+      liked: false
+    },
+    {
+      id: 3,
+      author: "Дмитрий К.",
+      title: "Паприка копченая — куда добавлять?",
+      body: "Взял копчёную паприку, но не понимаю, с чем её сочетать. Подскажите блюда.",
+      replies: [
+        { author: "Анна", body: "Идеально в гуляш, курицу на гриле и даже в хумус!" },
+        { author: "Сергей", body: "Попробуй посыпать картошку перед запеканием — огонь." }
+      ],
+      likes: 23,
+      views: 156,
+      liked: false
+    },
+    {
+      id: 4,
+      author: "Алексей",
+      title: "Скидки на наборы — когда ждать?",
+      body: "Интересуют наборы специй. Бывают ли сезонные распродажи, и когда лучше брать?",
+      replies: [],
+      likes: 3,
+      views: 19,
+      liked: false
+    }
+  ];
+
+  let forumNextId = 5;
+  let forumCurrentTopicId = null;
+  const forumTopicsEl = document.getElementById('forum-topics');
+  const forumListEl = document.getElementById('forum-list-view');
+  const forumTopicEl = document.getElementById('forum-topic-view');
+  const forumTopicContentEl = document.getElementById('forum-topic-content');
+
+  function forumAvatar(name) {
+    const letter = esc((name || '?').trim().charAt(0).toUpperCase());
+    const colors = ['#1d6fe0', '#5fb8f5', '#0b3d91', '#3a9be8', '#2b7fd1', '#7cc8f8'];
+    const color = colors[(name || '').length % colors.length];
+    return `<span class="f-avatar" style="background:${color}">${letter}</span>`;
+  }
+
+  function renderForumList() {
+    if (forumTopics.length === 0) {
+      forumTopicsEl.innerHTML = '<div class="f-empty">Тем пока нет. Станьте первым!</div>';
+      return;
+    }
+    forumTopicsEl.innerHTML = forumTopics.slice().reverse().map(t => `
+      <article class="f-card clickable" data-id="${t.id}">
+        <h3 class="f-title">${esc(t.title)}</h3>
+        <p class="f-body">${esc(t.body)}</p>
+        <div class="f-meta">
+          ${forumAvatar(t.author)}
+          <span>${esc(t.author)}</span>
+          <button class="f-stat like-btn ${t.liked ? 'liked' : ''}" data-like="${t.id}">
+            ${t.liked ? '❤' : '🤍'} ${t.likes}
+          </button>
+          <button class="f-stat comment-btn" data-comment="${t.id}">
+            💬 ${t.replies.length}
+          </button>
+          <span class="f-stat">👁 ${t.views}</span>
+        </div>
+      </article>`).join('');
+  }
+
+  function renderForumTopic() {
+    const t = forumTopics.find(x => x.id === forumCurrentTopicId);
+    if (!t) { showForumList(); return; }
+    let html = `
+      <article class="f-card" style="cursor:default;">
+        <h2 class="f-title" style="font-size:1.25rem;">${esc(t.title)}</h2>
+        <p class="f-body">${esc(t.body)}</p>
+        <div class="f-meta">
+          ${forumAvatar(t.author)}
+          <span>${esc(t.author)}</span>
+          <button class="f-stat like-btn ${t.liked ? 'liked' : ''}" data-like="${t.id}">
+            ${t.liked ? '❤' : '🤍'} ${t.likes}
+          </button>
+          <button class="f-stat comment-btn" data-comment="${t.id}">
+            💬 ${t.replies.length}
+          </button>
+          <span class="f-stat">👁 ${t.views}</span>
+        </div>
+      </article>`;
+    t.replies.forEach(r => {
+      html += `
+        <article class="f-card" style="cursor:default;">
+          <p class="f-body" style="margin-top:0">${esc(r.body)}</p>
+          <div class="f-meta">${forumAvatar(r.author)}<span>${esc(r.author)}</span></div>
+        </article>`;
+    });
+    forumTopicContentEl.innerHTML = html;
+  }
+
+  function showForumList() {
+    forumCurrentTopicId = null;
+    forumListEl.style.display = 'block';
+    forumTopicEl.style.display = 'none';
+    renderForumList();
+  }
+
+  function showForumTopic(id) {
+    forumCurrentTopicId = id;
+    const t = forumTopics.find(x => x.id === id);
+    if (t) t.views++;
+    forumListEl.style.display = 'none';
+    forumTopicEl.style.display = 'block';
+    renderForumTopic();
+    window.scrollTo({ top: 0 });
+  }
+
+  forumTopicsEl.addEventListener('click', e => {
+    const likeBtn = e.target.closest('.like-btn');
+    if (likeBtn) {
+      e.stopPropagation();
+      const id = Number(likeBtn.dataset.like);
+      const t = forumTopics.find(x => x.id === id);
+      if (t) {
+        t.liked = !t.liked;
+        t.likes += t.liked ? 1 : -1;
+        renderForumList();
+      }
+      return;
+    }
+    const commentBtn = e.target.closest('.comment-btn');
+    if (commentBtn) {
+      e.stopPropagation();
+      openComments(Number(commentBtn.dataset.comment));
+      return;
+    }
+    const card = e.target.closest('.f-card.clickable');
+    if (card) showForumTopic(Number(card.dataset.id));
+  });
+
+  forumTopicContentEl.addEventListener('click', e => {
+    const likeBtn = e.target.closest('.like-btn');
+    if (likeBtn) {
+      const id = Number(likeBtn.dataset.like);
+      const t = forumTopics.find(x => x.id === id);
+      if (t) {
+        t.liked = !t.liked;
+        t.likes += t.liked ? 1 : -1;
+        renderForumTopic();
+      }
+      return;
+    }
+    const commentBtn = e.target.closest('.comment-btn');
+    if (commentBtn) {
+      openComments(Number(commentBtn.dataset.comment));
+      return;
+    }
+  });
+
+  document.getElementById('forumHome').addEventListener('click', showForumList);
+  document.getElementById('forum-back').addEventListener('click', showForumList);
+
+  document.getElementById('forum-new-topic-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = e.target;
+    forumTopics.push({
+      id: forumNextId++,
+      author: f.author.value.trim(),
+      title: f.title.value.trim(),
+      body: f.body.value.trim(),
+      replies: [],
+      likes: 0,
+      views: 0,
+      liked: false
+    });
+    f.reset();
+    renderForumList();
+  });
+
+  renderForumList();
+
+  // Проверка уровня для создания поста
+  const newTopicForm = document.getElementById('forum-new-topic-form');
+  function checkForumLevel() {
+    if (user.level < 5) {
+      newTopicForm.classList.add('locked');
+      if (!newTopicForm.querySelector('.f-lock-msg')) {
+        const msg = document.createElement('div');
+        msg.className = 'f-lock-msg';
+        msg.textContent = '🔒 Создание тем доступно с 5 уровня';
+        newTopicForm.prepend(msg);
+      }
+    } else {
+      newTopicForm.classList.remove('locked');
+      const msg = newTopicForm.querySelector('.f-lock-msg');
+      if (msg) msg.remove();
+    }
+  }
+  checkForumLevel();
+
+  // =========================================================
+  // ===== ПАНЕЛЬ КОММЕНТАРИЕВ =====
+  // =========================================================
+  let currentCommentTopicId = null;
+  const commentsOverlay = document.getElementById('commentsOverlay');
+  const commentsListEl = document.getElementById('commentsList');
+
+  function openComments(topicId) {
+    currentCommentTopicId = topicId;
+    const t = forumTopics.find(x => x.id === topicId);
+    if (!t) return;
+    renderCommentsList();
+    commentsOverlay.classList.add('open');
+  }
+
+  function closeComments() {
+    commentsOverlay.classList.remove('open');
+    currentCommentTopicId = null;
+  }
+
+  commentsOverlay.addEventListener('click', e => {
+    if (e.target === commentsOverlay) closeComments();
+  });
+
+  function renderCommentsList() {
+    const t = forumTopics.find(x => x.id === currentCommentTopicId);
+    if (!t || t.replies.length === 0) {
+      commentsListEl.innerHTML = '<div class="comments-empty">Комментариев пока нет. Будьте первым!</div>';
+      return;
+    }
+    commentsListEl.innerHTML = t.replies.slice().reverse().map(r => `
+      <div class="comment-item">
+        <div class="comment-head">
+          ${forumAvatar(r.author)}
+          <span class="comment-author">${esc(r.author)}</span>
+        </div>
+        <div class="comment-body">${esc(r.body)}</div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('commentsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const author = document.getElementById('commentAuthor').value.trim();
+    const text = document.getElementById('commentText').value.trim();
+    if (!author || !text) return;
+    const t = forumTopics.find(x => x.id === currentCommentTopicId);
+    if (!t) return;
+    t.replies.push({ author, body: text });
+    document.getElementById('commentAuthor').value = '';
+    document.getElementById('commentText').value = '';
+    renderCommentsList();
+    renderForumList();
+    if (forumCurrentTopicId === currentCommentTopicId) renderForumTopic();
+    showToast('Комментарий добавлен');
+  });
+</script>
+
+</body>
+</html>
